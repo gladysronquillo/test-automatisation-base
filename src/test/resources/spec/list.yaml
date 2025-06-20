@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: api-personajes
+  version: '1.0'
+  description: API para obtener personajes ficticios y sus poderes.
+servers:
+  - url: http://bp-se-test-cabcd9b246a5.herokuapp.com
+paths:
+  /testuser/api/characters:
+    get:
+      summary: Obtener todos los personajes
+      operationId: getCharacters
+      responses:
+        '200':
+          description: Lista de personajes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Character'
+              examples:
+                ejemplo:
+                  value:
+                    - id: 4
+                      name: Character with many powers
+                      alterego: Many Powers Alter
+                      description: Personaje con muchos poderes
+    post:
+      summary: Crear un nuevo personaje
+      operationId: createCharacter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Iron Man
+                alterego:
+                  type: string
+                  example: Tony Stark
+                description:
+                  type: string
+                  example: Genius billionaire
+                powers:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Armor
+                    - Flight
+              required:
+                - name
+                - alterego
+                - description
+                - powers
+            examples:
+              ejemplo:
+                value:
+                  name: Iron Man
+                  alterego: Tony Stark
+                  description: Genius billionaire
+                  powers:
+                    - Armor
+                    - Flight
+      responses:
+        '201':
+          description: Personaje creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+              examples:
+                ejemplo:
+                  value:
+                    id: 945
+                    name: Laly
+                    alterego: Gladys Ronquillo
+                    description: Genius billionaire
+                    powers:
+                      - Armor
+                      - Flight
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: Character name already exists
+                  - type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Name is required
+                      description:
+                        type: string
+                        example: Description is required
+                      powers:
+                        type: string
+                        example: Powers are required
+                      alterego:
+                        type: string
+                        example: Alterego is required
+              examples:
+                personajeExistente:
+                  summary: Personaje ya existe
+                  value:
+                    error: Character name already exists
+                datosFaltantes:
+                  summary: Faltan datos requeridos
+                  value:
+                    name: Name is required
+                    description: Description is required
+                    powers: Powers are required
+                    alterego: Alterego is required
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /testuser/api/characters/{id}:
+    get:
+      summary: Obtener personaje por ID
+      operationId: getCharacterById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del personaje a consultar
+      responses:
+        '200':
+          description: Personaje encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+              examples:
+                ejemploBatman:
+                  summary: Ejemplo de respuesta para Batman
+                  value:
+                    id: 16
+                    name: Batman
+                    alterego: Bruce Wayne
+                    description: Genius billionaire
+                    powers:
+                      - Strong
+                      - Force
+        '404':
+          description: Personaje no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Character:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: Character with many powers
+        alterego:
+          type: string
+          example: Many Powers Alter
+        description:
+          type: string
+          example: Personaje con muchos poderes
+        powers:
+          type: array
+          items:
+            type: string
+          example:
+            - Poder 1
+            - Poder 2
+            - Poder 3
+      required:
+        - id
+        - name
+        - alterego
+        - description
+        - powers
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
