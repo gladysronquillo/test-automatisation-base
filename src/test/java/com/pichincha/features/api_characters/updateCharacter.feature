@@ -11,8 +11,7 @@ Feature: CHAPTER-1 Obtener todos los personajes (microservicio para consulta de 
     * def characters = call read('classpath:com/pichincha/features/api_characters/getCharacters.feature@obtenerPersonajes')
     And print characters
     * def existente = karate.filter(characters.response, function(x){ return x.name == requestBody.name })
-    * if (existente.length == 0) karate.call('classpath:com/pichincha/features/api_characters/createCharacter.feature@crearPersonaje')
-    And print existente
+    * if (existente.length == 0) existente[0] = karate.call('classpath:com/pichincha/features/api_characters/createCharacter.feature@crearPersonaje').response
     * path '/' + existente[0].id
     And request requestBody
     When method PUT

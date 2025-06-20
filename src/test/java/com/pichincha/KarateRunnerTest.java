@@ -25,13 +25,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertTrue;
 
 public class KarateRunnerTest {
-   /*static {
-        System.setProperty("karate.ssl", "true");
-    }
-    @Karate.Test
-    Karate testBasic() {
-        return Karate.run("classpath:karate-test.feature");
-    }*/
 
     private static final Logger logger = Logger.getLogger(KarateRunnerTest.class.getName());
     private static final String ERROR_MSG = "ERROR: ";
@@ -41,7 +34,7 @@ public class KarateRunnerTest {
         ControlsExecutionParallelAgents.featuresSegmentation();
 
         Results results = Runner.path("src/test/java/com/pichincha")
-                .tags("~@ignore").outputCucumberJson(true).parallel(5);
+                .tags("~@ignore").outputCucumberJson(true).parallel(1);
 
         String karateOutputPath = "build/karate-reports";
         generateReport(karateOutputPath);

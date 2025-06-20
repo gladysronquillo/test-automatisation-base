@@ -8,13 +8,11 @@ Feature: CHAPTER-1 Obtener todos los personajes (microservicio para consulta de 
   @id:11 @eliminarPersonaje @respuestaExitosa204
   Scenario: T-API-CHAPTER-1-CA11-Eliminar personaje exitosamente 204 - karate
     * def id = typeof id == 'undefined' ? null : id
-    And print id
-
     * def requestBody = read('classpath:data/api_characters/request_create.json')
     * def characters = call read('classpath:com/pichincha/features/api_characters/getCharacters.feature@obtenerPersonajes')
-    * def existente = karate.filter(characters.response, function(x){ if (id != null) { return x.id == id} else {return x.name = requestBody.name } })
-    And print existente
-    * if (existente.length == 0)  existente =  karate.call('classpath:com/pichincha/features/api_characters/createCharacter.feature@crearPersonaje')
+    And print characters
+    * def existente = karate.filter(characters.response, function(x){ if (id != null) { return x.id == id} else {return x.name == requestBody.name } })
+    * if (existente.length == 0 && id == null)  existente[0] =  karate.call('classpath:com/pichincha/features/api_characters/createCharacter.feature@crearPersonaje').response
     * def personaje = existente[0]
     And print personaje
     * path '/' + personaje.id
